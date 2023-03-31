@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:quiz_app/global/styles/textstyle.dart';
-
 
 class ContainerClass {
   static signinOptionsContainerSizes(height, width, circularContainerheight, circularContainerWidth, signinOptionsImage, signinOptionsImageHeight, text) {
@@ -210,22 +211,63 @@ class ContainerClass {
     );
   }
 
-  static circleContainerImage(
-      {required double borderWidth,
-      required double borderRadius,
-      required String image,
-      required HexColor borderColor}) {
+  static circleContainerImage({required double borderWidth, required double borderRadius, required String image, required HexColor borderColor}) {
     return Container(
       decoration: BoxDecoration(
-          border: Border.all(
-            color: borderColor,
-            width: borderWidth,
-          ),
-          borderRadius: BorderRadius.circular(borderRadius)),
+        border: Border.all(
+          color: borderColor,
+          width: borderWidth,
+        ),
+        borderRadius: BorderRadius.circular(
+          borderRadius,
+        ),
+      ),
       child: CircleAvatar(
         radius: 40.r,
         backgroundImage: CachedNetworkImageProvider(image),
       ),
     );
+  }
+
+  static registrationImage({required double borderWidth, required double borderRadius, required HexColor borderColor, String? image}) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: borderColor,
+          width: borderWidth,
+        ),
+        borderRadius: BorderRadius.circular(
+          borderRadius,
+        ),
+      ),
+      child: CircleAvatar(
+        radius: 58,
+        backgroundImage: backgroundImage(image),
+        child: Stack(
+          children: const [
+            Align(
+              alignment: Alignment.bottomRight,
+              child: CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.white70,
+                child: Icon(
+                  Icons.camera_alt,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static ImageProvider<Object>? backgroundImage(String? image) {
+    if (image != null) {
+      return FileImage(
+        File(image),
+      );
+    } else {
+      return const AssetImage("assets/person.png");
+    }
   }
 }

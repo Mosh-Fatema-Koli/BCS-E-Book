@@ -9,9 +9,7 @@ import 'package:quiz_app/view/components/button_widget.dart';
 import 'package:quiz_app/view/components/textbox_widget.dart';
 import 'package:quiz_app/view/screen/authScreens/registration_page.dart';
 
-
 class LoginPage extends StatelessWidget {
-
   LoginController loginController = Get.put(LoginController());
 
   LoginPage({super.key});
@@ -28,7 +26,6 @@ class LoginPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
                   boxShadow: [
-
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
                       spreadRadius: 5,
@@ -74,10 +71,19 @@ class LoginPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 30),
                       GestureDetector(
-                          onTap: (){
-                            loginController.loginWithEmail();
-                          },
-                          child: button(buttonName: "Login",)),
+                        onTap: () {
+                          loginController.loginWithEmail();
+                        },
+                        child: Obx(
+                          () => loginController.isLogginIn.value
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : button(
+                                  buttonName: "Login",
+                                ),
+                        ),
+                      ),
                       const SizedBox(
                         height: 20,
                       ),
@@ -97,7 +103,11 @@ class LoginPage extends StatelessWidget {
                             ),
                             Text(
                               'Register'.tr,
-                              style: CustomtextStyle.maintext2.copyWith(fontSize: 14.sp, color:HexColor("#2E2E54"), fontWeight: FontWeight.w600),
+                              style: CustomtextStyle.maintext2.copyWith(
+                                fontSize: 14.sp,
+                                color: HexColor("#2E2E54"),
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),

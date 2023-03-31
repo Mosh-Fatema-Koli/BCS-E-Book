@@ -10,15 +10,15 @@ import 'package:quiz_app/view/screen/learnPage/lesson_page.dart';
 import '../../../controller/learn/subjcet_controller.dart';
 import 'lesson_list_page.dart';
 
-class SubjectListPage extends StatelessWidget {
+class QuestionBankPage extends StatelessWidget {
   final _controller = Get.put(SubjcetController());
 
-  SubjectListPage({super.key});
+  QuestionBankPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appbarWidget(title: 'Select Your Subject'),
+      appBar: appbarWidget(title: 'Select Your Question Bank'),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 0),
         child: SingleChildScrollView(
@@ -52,13 +52,6 @@ class SubjectListPage extends StatelessWidget {
                 subject: _controller.subjectList[index],
               ),
             );
-            /*if (index == 0) {
-              Get.to(LessonListPage(subjectName: "Bangla"));
-            } else if (index == 1) {
-              Get.to(LessonListPage(subjectName: "English"));
-            } else if (index == 2) {
-              Get.to(LessonListPage(subjectName: "Math"));
-            }*/
           },
           child: subjectListContainer(
             title: "${_controller.subjectList[index].name}",

@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-Widget button({required String buttonName,}) {
+Widget button({
+  required String buttonName,
+}) {
   return Container(
     width: 150,
     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -17,13 +19,16 @@ Widget button({required String buttonName,}) {
         colors: [
           HexColor("#323361"),
           HexColor("#2E2E54"),
-
         ],
       ),
     ),
     child: Text(
       buttonName,
-      style: TextStyle(fontSize: 18.sp, color: Colors.white, fontWeight: FontWeight.bold),
+      style: TextStyle(
+        fontSize: 18.sp,
+        color: Colors.white,
+        fontWeight: FontWeight.bold,
+      ),
     ),
   );
 }

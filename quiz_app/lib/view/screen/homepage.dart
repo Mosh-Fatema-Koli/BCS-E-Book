@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:quiz_app/api/api_urls.dart';
+import 'package:quiz_app/controller/global_controller.dart';
 import 'package:quiz_app/controller/home_controller.dart';
 import 'package:quiz_app/global/components/container_sizes.dart';
 import 'package:quiz_app/global/styles/textstyle.dart';
 import 'package:quiz_app/view/components/carousel_slider_widget.dart';
+import 'package:quiz_app/view/screen/authScreens/login_screen.dart';
 
 import '../../global/helpers.dart';
 
 class Homepage extends StatelessWidget {
   final _controller = Get.put(HomeController());
+  final _globalController = Get.find<GlobalController>();
 
   Homepage({super.key});
 
@@ -19,76 +23,85 @@ class Homepage extends StatelessWidget {
     return Scaffold(
       backgroundColor: HexColor("#EFF2F9"),
       drawer: Drawer(
-
         child: Column(
           children: [
             _drawerProfile(),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            _drawerItems(icon: Icons.people, title: 'PROFILE', onPressed: () {}),
             _drawerItems(icon: Icons.pages, title: 'FACEBOOK PAGE', onPressed: () {}),
             _drawerItems(icon: Icons.groups, title: 'FACEBOOK GROUP', onPressed: () {}),
             _drawerItems(icon: Icons.contact_phone_rounded, title: 'CONTACT', onPressed: () {}),
             _drawerItems(icon: Icons.store_rounded, title: 'ABOUT', onPressed: () {}),
             _drawerItems(icon: Icons.star, title: 'RATING', onPressed: () {}),
             _drawerItems(icon: Icons.share, title: 'SHARE', onPressed: () {}),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Divider(
-             height: 2,
-             color: Colors.grey,
-             thickness: 2,
+            const Divider(
+              height: 2,
+              color: Colors.grey,
+              thickness: 2,
               indent: 20,
               endIndent: 60,
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            _drawerItems(icon: Icons.logout, title: 'SIGN OUT', onPressed: () {}),
+            _drawerItems(
+                icon: Icons.logout,
+                title: 'SIGN OUT',
+                onPressed: () {
+                  _globalController.logout();
+                  Get.offAll(() => LoginPage());
+                }),
           ],
         ),
       ),
       appBar: AppBar(
         elevation: 0,
-       // toolbarHeight: 50.h,
+        // toolbarHeight: 50.h,
         backgroundColor: HexColor("#2E2E54"),
-       actions: [
-         Icon(Icons.search,size: 25,color: Colors.white,),
-         SizedBox(
-           width: 10,
-         ),
-         Padding(
-           padding: const EdgeInsets.only(right: 10),
-           child: Icon(Icons.notifications,size: 25,color: Colors.white,),
-         )
-
-       ],
-        
+        actions: const [
+          Icon(
+            Icons.search,
+            size: 25,
+            color: Colors.white,
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: Icon(
+              Icons.notifications,
+              size: 25,
+              color: Colors.white,
+            ),
+          )
+        ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 170,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                    10.r,
-                  ),
-                  child: carouselSliderWidget(),
+          child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 170,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(
+                  10.r,
                 ),
+                child: carouselSliderWidget(),
               ),
-              SizedBox(
-                height: 20,
-              ),
-              _gridMenu()
-            ],
-          ),
-        )
-      ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            _gridMenu()
+          ],
+        ),
+      )),
     );
   }
 
@@ -121,7 +134,7 @@ class Homepage extends StatelessWidget {
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
+            offset: const Offset(0, 3), // changes position of shadow
           ),
         ],
         gradient: LinearGradient(
@@ -130,7 +143,6 @@ class Homepage extends StatelessWidget {
           colors: [
             HexColor("#323361"),
             HexColor("#2E2E54"),
-
           ],
         ),
       ),
@@ -143,21 +155,28 @@ class Homepage extends StatelessWidget {
             const SizedBox(
               height: 40,
             ),
-            ContainerClass.circleContainerImage(
-              borderWidth: 4.0,
-              borderRadius: 300.0,
-              image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
-              borderColor:  HexColor("#545BAF"),
-            ),
+            Obx(() {
+              return ContainerClass.circleContainerImage(
+                borderWidth: 4.0,
+                borderRadius: 300.0,
+                image: ApiUrl.baseUrl+_controller.imageUrl.value,
+                borderColor: HexColor("#545BAF"),
+              );
+            }),
             const SizedBox(
-          height: 15,
+              height: 15,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _profileText(text: 'NAME: Demo Name',),
-
+                Obx(
+                  () => _controller.name.value == ""
+                      ? const SizedBox()
+                      : _profileText(
+                          text: 'Name : ${_controller.name.value}',
+                        ),
+                ),
               ],
             )
           ],
@@ -169,10 +188,7 @@ class Homepage extends StatelessWidget {
   Widget _profileText({required String text}) {
     return Text(
       text,
-      style: CustomtextStyle.maintext2.copyWith(
-        fontSize: 18.sp,
-        color: Colors.white
-      ),
+      style: CustomtextStyle.maintext2.copyWith(fontSize: 18.sp, color: Colors.white),
     );
   }
 
@@ -181,12 +197,11 @@ class Homepage extends StatelessWidget {
       itemCount: _controller.gridItems.length,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: isTablet() ? 4 : 2,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 16,
-        childAspectRatio: 1.5,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
+        childAspectRatio: 1.4,
       ),
       itemBuilder: (context, index) {
         return InkWell(
